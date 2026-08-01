@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creator Empire Bundle</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1116;
+    --ink-2:#161B22;
+    --slate:#2A3140;
+    --paper:#F6F3EC;
+    --paper-2:#EDE8DB;
+    --brass:#C9A227;
+    --brass-light:#E4C567;
+    --teal:#2BA6A4;
+    --text-dark:#E8E6DE;
+    --text-light:#1C1B18;
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    background:var(--ink);
+    color:var(--text-dark);
+    transition:background .4s ease,color .4s ease;
+  }
+  body.light{
+    background:var(--paper);
+    color:var(--text-light);
+  }
+  .font-display{font-family:'Space Grotesk',sans-serif;}
+  .font-mono{font-family:'IBM Plex Mono',monospace;}
+
+  .grain{
+    position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:1;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .blueprint-bg{
+    background-image:
+      linear-gradient(rgba(201,162,39,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,162,39,0.07) 1px, transparent 1px);
+    background-size:28px 28px;
+  }
+  body.light .blueprint-bg{
+    background-image:
+      linear-gradient(rgba(28,27,24,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(28,27,24,0.06) 1px, transparent 1px);
+  }
+
+  .module-card{
+    border:1px solid var(--slate);
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+    transition:border-color .5s ease, box-shadow .5s ease, transform .3s ease;
+    opacity:0;
+    transform:translateY(14px);
+  }
+  body.light .module-card{
+    border:1px solid rgba(28,27,24,0.14);
+  }
+  .module-card.lit{
+    opacity:1;
+    transform:translateY(0);
+    border-color:var(--brass);
+    box-shadow:0 0 0 1px rgba(201,162,39,0.25), 0 12px 30px -14px rgba(201,162,39,0.35);
+  }
+  .module-card .node{
+    width:8px;height:8px;border-radius:999px;background:var(--slate);
+    transition:background .5s ease, box-shadow .5s ease;
+  }
+  .module-card.lit .node{
+    background:var(--brass);
+    box-shadow:0 0 10px 2px rgba(201,162,39,0.6);
+  }
+
+  .conduit{
+    position:absolute;
+    background:var(--slate);
+    transition:background .6s ease;
+  }
+  .conduit.lit{ background:var(--brass); }
+
+  .cta-btn{
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .cta-btn:hover{ transform:translateY(-2px); }
+  .cta-btn:active{ transform:translateY(0); }
+
+  .toggle-track{
+    width:52px;height:28px;border-radius:999px;
+    background:var(--slate);position:relative;cursor:pointer;
+    transition:background .3s ease;
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .toggle-thumb{
+    width:20px;height:20px;border-radius:999px;background:var(--brass);
+    position:absolute;top:3px;left:3px;transition:transform .3s ease;
+  }
+  body.light .toggle-thumb{ transform:translateX(24px); }
+
+  .manifest-row{
+    border-bottom:1px dashed var(--slate);
+  }
+  body.light .manifest-row{ border-bottom:1px dashed rgba(28,27,24,0.18); }
+
+  :focus-visible{
+    outline:2px solid var(--teal);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+    .module-card{opacity:1; transform:none;}
+  }
+
+  .stamp{
+    font-family:'IBM Plex Mono',monospace;
+    letter-spacing:.12em;
+  }
+
+  .seam::before{
+    content:"";
+    position:absolute;left:0;right:0;top:0;height:1px;
+    background:linear-gradient(90deg, transparent, var(--brass), transparent);
+    opacity:.5;
+  }
+</style>
+</head>
+<body class="antialiased">
+<div class="grain"></div>
+
+<!-- NAV -->
+<header class="fixed top-0 left-0 right-0 z-40 backdrop-blur-md" style="background:color-mix(in srgb, var(--ink) 82%, transparent);">
+  <div id="nav-bg" class="max-w-6xl mx-auto flex items-center justify-between px-5 sm:px-8 py-4">
+    <div class="flex items-center gap-2">
+      <div class="w-2 h-2 rounded-full" style="background:var(--brass);"></div>
+      <span class="font-mono text-xs sm:text-sm tracking-widest uppercase opacity-80" data-gumroad-field="name">Creator Empire Bundle</span>
+    </div>
+    <div class="flex items-center gap-4 sm:gap-6">
+      <a href="#manifest" class="hidden sm:inline text-sm font-medium opacity-80 hover:opacity-100 transition">What's inside</a>
+      <button id="theme-toggle" class="toggle-track" role="switch" aria-checked="false" aria-label="Toggle light and dark mode">
+        <span class="toggle-thumb"></span>
+      </button>
+      <a data-gumroad-action="buy" class="cta-btn font-mono text-xs sm:text-sm uppercase tracking-wide px-4 py-2 rounded-md" style="background:var(--brass); color:#1C1B18; font-weight:600;">
+        Get it — $<span data-gumroad-field="price">49</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="blueprint-bg relative pt-32 pb-24 px-5 sm:px-8 overflow-hidden">
+  <div class="max-w-6xl mx-auto">
+    <p class="stamp text-xs sm:text-sm uppercase opacity-70 mb-5">Bundle Spec — 9 Modules / 1 System / Lifetime Access</p>
+    <h1 class="font-display text-4xl sm:text-6xl leading-[1.05] font-semibold max-w-3xl">
+      Stop building your creator stack one tab at a time.
+    </h1>
+    <p class="mt-6 max-w-xl text-base sm:text-lg opacity-80 leading-relaxed">
+      <span data-gumroad-field="name">Creator Empire Bundle</span> wires together the prompts, templates, workflows, and systems a working channel actually runs on — so you open one folder instead of nine browser tabs.
+    </p>
+    <div class="mt-9 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+      <a data-gumroad-action="buy" class="cta-btn font-display text-base font-semibold px-7 py-3.5 rounded-lg" style="background:var(--brass); color:#1C1B18;">
+        Get the full bundle — $<span data-gumroad-field="price">49</span>
+      </a>
+      <a href="#manifest" class="text-sm font-medium underline decoration-dashed underline-offset-4 opacity-80 hover:opacity-100">
+        See all 9 modules ↓
+      </a>
+    </div>
+  </div>
+
+  <!-- Blueprint schematic signature element -->
+  <div class="max-w-6xl mx-auto mt-20">
+    <div class="relative">
+      <svg class="absolute inset-0 w-full h-full" style="z-index:0;" viewBox="0 0 900 420" preserveAspectRatio="none" aria-hidden="true">
+        <g id="wires" stroke-width="1.5" fill="none">
+          <path class="wire" data-i="0" d="M150,70 L150,140" />
+          <path class="wire" data-i="1" d="M450,70 L450,140" />
+          <path class="wire" data-i="2" d="M750,70 L750,140" />
+          <path class="wire" data-i="3" d="M150,210 L150,280" />
+          <path class="wire" data-i="4" d="M450,210 L450,280" />
+          <path class="wire" data-i="5" d="M750,210 L750,280" />
+          <path class="wire" data-i="6" d="M150,70 L450,70" />
+          <path class="wire" data-i="7" d="M450,70 L750,70" />
+          <path class="wire" data-i="8" d="M150,210 L750,210" />
+        </g>
+      </svg>
+      <div id="module-grid" class="relative grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8" style="z-index:1;">
+        <!-- module cards injected below in Module section reference; hero mini versions -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE MANIFEST -->
+<section id="manifest" class="relative px-5 sm:px-8 py-20 seam" style="border-top:1px solid var(--slate);">
+  <div class="max-w-6xl mx-auto">
+    <p class="stamp text-xs uppercase opacity-60 mb-3">The Manifest</p>
+    <h2 class="font-display text-3xl sm:text-4xl font-semibold mb-3">Nine modules. Every one built to be used, not admired.</h2>
+    <p class="opacity-75 max-w-2xl mb-12">Each module is a working part of the system — not filler. Here's exactly what ships.</p>
+
+    <div id="modules" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <div class="module-card rounded-xl p-6" data-mod="1">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-01</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">AI Prompts Library</h3>
+        <p class="text-sm opacity-75 leading-relaxed">A stocked set of prompts for scripting, ideation, hooks, and captions — built for the models you're already using, not a generic prompt dump.</p>
+      </div>
+
+      <div class="module-card rounded-xl p-6" data-mod="2">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-02</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">Canva Templates</h3>
+        <p class="text-sm opacity-75 leading-relaxed">Thumbnail, cover, and post templates — drop in your text and art, keep your channel's look consistent without starting from a blank canvas.</p>
+      </div>
+
+      <div class="module-card rounded-xl p-6" data-mod="3">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-03</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">Notion Templates</h3>
+        <p class="text-sm opacity-75 leading-relaxed">The dashboards to run production from — idea backlog, script tracker, publishing pipeline — so nothing lives in your head or a stray notes app.</p>
+      </div>
+
+      <div class="module-card rounded-xl p-6" data-mod="4">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-04</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">YouTube Creator Resources</h3>
+        <p class="text-sm opacity-75 leading-relaxed">Reference sheets and checklists for titles, descriptions, tags, and upload settings — the unglamorous parts that quietly affect reach.</p>
+      </div>
+
+      <div class="module-card rounded-xl p-6" data-mod="5">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-05</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">AI Workflow System</h3>
+        <p class="text-sm opacity-75 leading-relaxed">A step-by-step pipeline connecting your AI tools end to end — script, voice, visuals, edit — so output stops depending on memory of "the process."</p>
+      </div>
+
+      <div class="module-card rounded-xl p-6" data-mod="6">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-06</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">Content Calendar</h3>
+        <p class="text-sm opacity-75 leading-relaxed">A ready-to-fill schedule for planning uploads across weeks and months, built to stop the "what do I post today" scramble.</p>
+      </div>
+
+      <div class="module-card rounded-xl p-6" data-mod="7">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-07</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">Growth Blueprint</h3>
+        <p class="text-sm opacity-75 leading-relaxed">A structured plan for how a channel actually compounds — what to prioritize first, and what to leave until you have traction.</p>
+      </div>
+
+      <div class="module-card rounded-xl p-6" data-mod="8">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-08</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">Faceless YouTube System</h3>
+        <p class="text-sm opacity-75 leading-relaxed">A full method for building a channel without appearing on camera — sourcing, scripting, visuals, and voice, assembled into one repeatable loop.</p>
+      </div>
+
+      <div class="module-card rounded-xl p-6" data-mod="9">
+        <div class="flex items-center gap-2 mb-4"><span class="node"></span><span class="font-mono text-xs opacity-60">MOD-09</span></div>
+        <h3 class="font-display text-lg font-semibold mb-2">Bonus Resources</h3>
+        <p class="text-sm opacity-75 leading-relaxed">Extra assets and reference material added on top of the core eight modules — included at no added cost.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="relative px-5 sm:px-8 py-20" style="border-top:1px solid var(--slate);">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+    <div>
+      <p class="stamp text-xs uppercase opacity-60 mb-3">Built For</p>
+      <h2 class="font-display text-3xl font-semibold mb-5">Creators running on AI tools, not a full production team.</h2>
+      <p class="opacity-75 leading-relaxed mb-4">
+        If you're scripting, editing, and publishing largely on your own — with AI handling the parts a studio would normally staff — this bundle is the toolkit for that setup specifically, not a generic "content creator kit."
+      </p>
+      <p class="opacity-75 leading-relaxed">
+        It works whether you're starting a new channel or trying to bring order to one that's already grown past your current system.
+      </p>
+    </div>
+    <div class="rounded-xl p-6 sm:p-8" style="background:var(--ink-2); border:1px solid var(--slate);" id="fit-card">
+      <ul class="space-y-4 text-sm">
+        <li class="flex gap-3"><span class="font-mono text-xs mt-0.5" style="color:var(--brass);">01</span><span>You want a faceless or AI-assisted channel with a repeatable process, not one-off luck.</span></li>
+        <li class="flex gap-3"><span class="font-mono text-xs mt-0.5" style="color:var(--brass);">02</span><span>You're tired of rebuilding the same Canva cover or Notion tracker for every new project.</span></li>
+        <li class="flex gap-3"><span class="font-mono text-xs mt-0.5" style="color:var(--brass);">03</span><span>You want prompts and workflows that connect to each other, instead of scattered notes.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- REQUISITION / PRICING PANEL -->
+<section class="relative px-5 sm:px-8 py-20" style="border-top:1px solid var(--slate);">
+  <div class="max-w-3xl mx-auto">
+    <div class="rounded-2xl overflow-hidden" style="border:1px solid var(--brass);">
+      <div class="px-6 sm:px-10 py-5 flex items-center justify-between" style="background:var(--ink-2);">
+        <span class="stamp text-xs uppercase opacity-70">Requisition — Full Bundle</span>
+        <span class="stamp text-xs uppercase opacity-70">Digital / Instant Access</span>
+      </div>
+      <div class="px-6 sm:px-10 py-8">
+        <h3 class="font-display text-2xl font-semibold mb-1" data-gumroad-field="name">Creator Empire Bundle</h3>
+        <p class="text-sm opacity-70 mb-6" data-gumroad-field="description">The complete digital creator toolkit including AI prompts, Canva templates, Notion templates, YouTube creator resources, AI workflow system, content calendar, growth blueprint, faceless YouTube system, and bonus resources.</p>
+
+        <div class="manifest-row py-2.5 flex justify-between text-sm"><span class="opacity-75">AI Prompts Library</span><span class="font-mono opacity-50">MOD-01</span></div>
+        <div class="manifest-row py-2.5 flex justify-between text-sm"><span class="opacity-75">Canva Templates</span><span class="font-mono opacity-50">MOD-02</span></div>
+        <div class="manifest-row py-2.5 flex justify-between text-sm"><span class="opacity-75">Notion Templates</span><span class="font-mono opacity-50">MOD-03</span></div>
+        <div class="manifest-row py-2.5 flex justify-between text-sm"><span class="opacity-75">YouTube Creator Resources</span><span class="font-mono opacity-50">MOD-04</span></div>
+        <div class="manifest-row py-2.5 flex justify-between text-sm"><span class="opacity-75">AI Workflow System</span><span class="font-mono opacity-50">MOD-05</span></div>
+        <div class="manifest-row py-2.5 flex justify-between text-sm"><span class="opacity-75">Content Calendar</span><span class="font-mono opacity-50">MOD-06</span></div>
+        <div class="manifest-row py-2.5 flex justify-between text-sm"><span class="opacity-75">Growth Blueprint</span><span class="font-mono opacity-50">MOD-07</span></div>
+        <div class="manifest-row py-2.5 flex justify-between text-sm"><span class="opacity-75">Faceless YouTube System</span><span class="font-mono opacity-50">MOD-08</span></div>
+        <div class="py-2.5 flex justify-between text-sm"><span class="opacity-75">Bonus Resources</span><span class="font-mono opacity-50">MOD-09</span></div>
+
+        <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+          <div>
+            <span class="font-display text-4xl font-semibold">$<span data-gumroad-field="price">49</span></span>
+            <span class="text-sm opacity-60 ml-2">one-time payment</span>
+          </div>
+          <a data-gumroad-action="buy" class="cta-btn font-display text-base font-semibold px-7 py-3.5 rounded-lg text-center" style="background:var(--brass); color:#1C1B18;">
+            Get the full bundle
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="relative px-5 sm:px-8 py-20" style="border-top:1px solid var(--slate);">
+  <div class="max-w-3xl mx-auto">
+    <p class="stamp text-xs uppercase opacity-60 mb-3">Before You Buy</p>
+    <h2 class="font-display text-2xl sm:text-3xl font-semibold mb-8">A few things worth knowing</h2>
+    <div class="space-y-5">
+      <details class="module-card lit rounded-lg p-5" open>
+        <summary class="font-medium cursor-pointer">What do I actually get after purchase?</summary>
+        <p class="text-sm opacity-75 mt-3 leading-relaxed">Instant access to all 9 modules as downloadable files — prompts, templates, and systems ready to use in the tools you already have (Canva, Notion, and your AI apps of choice).</p>
+      </details>
+      <details class="module-card lit rounded-lg p-5">
+        <summary class="font-medium cursor-pointer">Do I need paid software to use this?</summary>
+        <p class="text-sm opacity-75 mt-3 leading-relaxed">Canva and Notion both have free tiers that work with these templates. Your AI tools are your own choice — the prompts are written to be portable.</p>
+      </details>
+      <details class="module-card lit rounded-lg p-5">
+        <summary class="font-medium cursor-pointer">Is this a subscription?</summary>
+        <p class="text-sm opacity-75 mt-3 leading-relaxed">No — it's a single one-time payment of $<span data-gumroad-field="price">49</span> for lifetime access to everything listed above.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="relative px-5 sm:px-8 py-12" style="border-top:1px solid var(--slate);">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+    <span class="font-mono text-xs opacity-50 uppercase tracking-widest" data-gumroad-field="name">Creator Empire Bundle</span>
+    <a data-gumroad-action="buy" class="cta-btn font-display text-sm font-semibold px-6 py-3 rounded-lg" style="background:var(--brass); color:#1C1B18;">
+      Get it now — $<span data-gumroad-field="price">49</span>
+    </a>
+  </div>
+</footer>
+
+<script>
+  // Theme toggle: default follows system preference, in-memory override only.
+  (function(){
+    var body = document.body;
+    var toggle = document.getElementById('theme-toggle');
+    var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    var isLight = prefersLight;
+    function applyTheme(){
+      body.classList.toggle('light', isLight);
+      toggle.setAttribute('aria-checked', String(isLight));
+    }
+    applyTheme();
+    toggle.addEventListener('click', function(){
+      isLight = !isLight;
+      applyTheme();
+    });
+    toggle.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle.click(); }
+    });
+  })();
+
+  // Sequential module illumination on scroll
+  (function(){
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.module-card[data-mod]'));
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduced){
+      cards.forEach(function(c){ c.classList.add('lit'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var el = entry.target;
+          var idx = parseInt(el.getAttribute('data-mod'), 10) || 0;
+          setTimeout(function(){ el.classList.add('lit'); }, idx * 90);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.2 });
+    cards.forEach(function(c){ io.observe(c); });
+  })();
+
+  // Hero wire animation (staggered draw, purely decorative)
+  (function(){
+    var wires = document.querySelectorAll('.wire');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    wires.forEach(function(w, i){
+      var len = w.getTotalLength ? w.getTotalLength() : 100;
+      w.style.stroke = 'var(--slate)';
+      w.style.strokeDasharray = len;
+      w.style.strokeDashoffset = reduced ? 0 : len;
+      if(!reduced){
+        setTimeout(function(){
+          w.style.transition = 'stroke-dashoffset 0.6s ease';
+          w.style.strokeDashoffset = 0;
+        }, 200 + i * 80);
+      }
+    });
+  })();
+</script>
+</body>
+</html>
